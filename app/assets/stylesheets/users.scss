@@ -5,6 +5,19 @@
   text-align: center;
 }
 
+/* ユーザー勤怠情報テーブル */
+
+#table-attendances {
+  th {
+    vertical-align: moddle;
+    text-align: center;
+  }
+  td {
+    vertical-align: moddle;
+    text-align: center;
+  }
+}
+
 /* 入力フォーム */
 
 .label-signup {
