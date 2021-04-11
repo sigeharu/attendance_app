@@ -22,8 +22,6 @@ test:
 
 production:
   <<: *default
-  adapter: postgresql
-  encoding: unicode
-  pool: 5
-  url: <%= ENV['HEROKU_POSTGRESQL_BRONZE_URL'] %>
-  socket: /var/run/postgresql/.s.PGSQL.5432
+  database: myapp_production
+  username: myapp
+  password: <%= ENV['MYAPP_DATABASE_PASSWORD'] %>
