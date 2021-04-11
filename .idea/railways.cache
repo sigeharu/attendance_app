@@ -1,0 +1,66 @@
+                                               Prefix Verb   URI Pattern                                                                              Controller#Action
+                                                 root GET    /                                                                                        static_pages#top
+                                               signup GET    /signup(.:format)                                                                        users#new
+                                                login GET    /login(.:format)                                                                         sessions#new
+                                                      POST   /login(.:format)                                                                         sessions#create
+                                               logout DELETE /logout(.:format)                                                                        sessions#destroy
+                                         import_users POST   /users/import(.:format)                                                                  users#import
+                                     user_update_user PATCH  /users/:id/user_update(.:format)                                                         users#user_update
+                                        csv_show_user GET    /users/:id/csv_show(.:format)                                                            users#csv_show
+                      attendances_edit_one_month_user GET    /users/:id/attendances/edit_one_month(.:format)                                          attendances#edit_one_month
+                    attendances_update_one_month_user PATCH  /users/:id/attendances/update_one_month(.:format)                                        attendances#update_one_month
+                                index_attendance_user GET    /users/:id/index_attendance(.:format)                                                    users#index_attendance
+                             csv_user_attendance_user GET    /users/:id/csv_user_attendance(.:format)                                                 users#csv_user_attendance
+            edit_overtime_application_user_attendance GET    /users/:user_id/attendances/:id/edit_overtime_application(.:format)                      attendances#edit_overtime_application
+          update_overtime_application_user_attendance PATCH  /users/:user_id/attendances/:id/update_overtime_application(.:format)                    attendances#update_overtime_application
+   edit_superior_overtime_application_user_attendance GET    /users/:user_id/attendances/:id/edit_superior_overtime_application(.:format)             attendances#edit_superior_overtime_application
+ update_superior_overtime_application_user_attendance PATCH  /users/:user_id/attendances/:id/update_superior_overtime_application(.:format)           attendances#update_superior_overtime_application
+       attendance_change_confirmation_user_attendance GET    /users/:user_id/attendances/:id/attendance_change_confirmation(.:format)                 attendances#attendance_change_confirmation
+update_attendance_change_confirmation_user_attendance PATCH  /users/:user_id/attendances/:id/update_attendance_change_confirmation(.:format)          attendances#update_attendance_change_confirmation
+                update_month_superior_user_attendance PATCH  /users/:user_id/attendances/:id/update_month_superior(.:format)                          attendances#update_month_superior
+                       month_approval_user_attendance GET    /users/:user_id/attendances/:id/month_approval(.:format)                                 attendances#month_approval
+                update_month_approval_user_attendance PATCH  /users/:user_id/attendances/:id/update_month_approval(.:format)                          attendances#update_month_approval
+                                     user_attendances GET    /users/:user_id/attendances(.:format)                                                    attendances#index
+                                                      POST   /users/:user_id/attendances(.:format)                                                    attendances#create
+                                  new_user_attendance GET    /users/:user_id/attendances/new(.:format)                                                attendances#new
+                                 edit_user_attendance GET    /users/:user_id/attendances/:id/edit(.:format)                                           attendances#edit
+                                      user_attendance GET    /users/:user_id/attendances/:id(.:format)                                                attendances#show
+                                                      PATCH  /users/:user_id/attendances/:id(.:format)                                                attendances#update
+                                                      PUT    /users/:user_id/attendances/:id(.:format)                                                attendances#update
+                                                      DELETE /users/:user_id/attendances/:id(.:format)                                                attendances#destroy
+                                           user_bases GET    /users/:user_id/bases(.:format)                                                          bases#index
+                                                      POST   /users/:user_id/bases(.:format)                                                          bases#create
+                                       new_user_basis GET    /users/:user_id/bases/new(.:format)                                                      bases#new
+                                      edit_user_basis GET    /users/:user_id/bases/:id/edit(.:format)                                                 bases#edit
+                                           user_basis GET    /users/:user_id/bases/:id(.:format)                                                      bases#show
+                                                      PATCH  /users/:user_id/bases/:id(.:format)                                                      bases#update
+                                                      PUT    /users/:user_id/bases/:id(.:format)                                                      bases#update
+                                                      DELETE /users/:user_id/bases/:id(.:format)                                                      bases#destroy
+                                                users GET    /users(.:format)                                                                         users#index
+                                                      POST   /users(.:format)                                                                         users#create
+                                             new_user GET    /users/new(.:format)                                                                     users#new
+                                            edit_user GET    /users/:id/edit(.:format)                                                                users#edit
+                                                 user GET    /users/:id(.:format)                                                                     users#show
+                                                      PATCH  /users/:id(.:format)                                                                     users#update
+                                                      PUT    /users/:id(.:format)                                                                     users#update
+                                                      DELETE /users/:id(.:format)                                                                     users#destroy
+                        rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                  action_mailbox/ingresses/postmark/inbound_emails#create
+                           rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                     action_mailbox/ingresses/relay/inbound_emails#create
+                        rails_sendgrid_inbound_emails POST   /rails/action_mailbox/sendgrid/inbound_emails(.:format)                                  action_mailbox/ingresses/sendgrid/inbound_emails#create
+                  rails_mandrill_inbound_health_check GET    /rails/action_mailbox/mandrill/inbound_emails(.:format)                                  action_mailbox/ingresses/mandrill/inbound_emails#health_check
+                        rails_mandrill_inbound_emails POST   /rails/action_mailbox/mandrill/inbound_emails(.:format)                                  action_mailbox/ingresses/mandrill/inbound_emails#create
+                         rails_mailgun_inbound_emails POST   /rails/action_mailbox/mailgun/inbound_emails/mime(.:format)                              action_mailbox/ingresses/mailgun/inbound_emails#create
+                       rails_conductor_inbound_emails GET    /rails/conductor/action_mailbox/inbound_emails(.:format)                                 rails/conductor/action_mailbox/inbound_emails#index
+                                                      POST   /rails/conductor/action_mailbox/inbound_emails(.:format)                                 rails/conductor/action_mailbox/inbound_emails#create
+                    new_rails_conductor_inbound_email GET    /rails/conductor/action_mailbox/inbound_emails/new(.:format)                             rails/conductor/action_mailbox/inbound_emails#new
+                   edit_rails_conductor_inbound_email GET    /rails/conductor/action_mailbox/inbound_emails/:id/edit(.:format)                        rails/conductor/action_mailbox/inbound_emails#edit
+                        rails_conductor_inbound_email GET    /rails/conductor/action_mailbox/inbound_emails/:id(.:format)                             rails/conductor/action_mailbox/inbound_emails#show
+                                                      PATCH  /rails/conductor/action_mailbox/inbound_emails/:id(.:format)                             rails/conductor/action_mailbox/inbound_emails#update
+                                                      PUT    /rails/conductor/action_mailbox/inbound_emails/:id(.:format)                             rails/conductor/action_mailbox/inbound_emails#update
+                                                      DELETE /rails/conductor/action_mailbox/inbound_emails/:id(.:format)                             rails/conductor/action_mailbox/inbound_emails#destroy
+                rails_conductor_inbound_email_reroute POST   /rails/conductor/action_mailbox/:inbound_email_id/reroute(.:format)                      rails/conductor/action_mailbox/reroutes#create
+                                   rails_service_blob GET    /rails/active_storage/blobs/:signed_id/*filename(.:format)                               active_storage/blobs#show
+                            rails_blob_representation GET    /rails/active_storage/representations/:signed_blob_id/:variation_key/*filename(.:format) active_storage/representations#show
+                                   rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                              active_storage/disk#show
+                            update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                      active_storage/disk#update
+                                 rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                           active_storage/direct_uploads#create

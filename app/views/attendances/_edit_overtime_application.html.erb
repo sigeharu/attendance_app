@@ -1,0 +1,49 @@
+<% provide(:class_text, 'overtime-application' ) %>
+<% provide(:button_text, '変更を送信する' ) %>
+
+<%= form_with(model: @attendance, url: update_overtime_application_user_attendance_path, local: true, method: :patch) do |f| %>
+  <div class="modal-dialog modal-lg modal-dialog-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h1 class="modal-title">【残業申請】</h1>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <table class="table table-bordered table-condensed table-hover tbody-light" id="table-attendances">
+            <thead>
+              <tr>
+                <td>日付</td>
+                <td>曜日</td>
+                <td>終了予定時間</td>
+                <td>翌日</td>
+                <td>業務処理内容</td>
+                <td>指示者確認㊞</td>
+              </tr>
+            </thead>
+            
+            <tbody>
+              <tr>
+                <td><%= l(@attendance.worked_on, format: :short) %></td>
+                <td><%= render 'users/days_of_the_week', day: @attendance %></td>
+                <td><%= f.time_select :scheduled_end_time, {}, class: "form-control-sm" %></td>
+                <td><%= f.check_box :next_day, {}, true, false %></td>
+                <td><%= f.text_field :business_processing_content, class: "form-control" %></td>
+                <td>
+                <%= f.collection_select :instructor, @superior, :name, :name,
+                                        {}, class: "form-control" %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <%= f.submit yield(:button_text), class: "btn btn-primary btn-#{yield(:class_text)} form-control" %>
+      </div>
+    </div>
+  </div>
+<% end %>
