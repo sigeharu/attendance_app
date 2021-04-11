@@ -21,8 +21,8 @@ test:
   database: db/test.sqlite3
 
 production:
+  <<: *default
   adapter: postgresql
   encoding: unicode
   pool: 5
-  url: <%= ENV['HEROKU_POSTGRESQL_BRONZE_URL'] %>
-  socket: /var/run/postgresql/.s.PGSQL.5432
+  
