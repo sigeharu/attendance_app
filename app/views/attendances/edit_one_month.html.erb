@@ -1,5 +1,5 @@
 <% provide(:title, @user.name) %>
-<%= form_with(model: @user, url: attendances_update_one_month_user_path(date: @first_day), local: true, method: :patch) do |f| %>
+<%= form_with(model: @user, url: attendances_update_one_month_user_path(@user, date: @first_day), local: true, method: :patch) do |f| %>
   <div>
     <h1>勤怠編集画面</h1>
     <table class="table table-bordered table-condensed table-hover" id="table-attendances">
@@ -9,8 +9,10 @@
           <th>曜日</th>
           <th>出勤時間</th>
           <th>退勤時間</th>
+          <th>翌日</th>
           <th>在社時間</th>
           <th>備考</th>
+          <th>指示者確認㊞</th>
         </tr>
       </thead>
       <tbody>
@@ -18,29 +20,54 @@
           <%= f.fields_for "attendances[]", day do |attendance| %>
             <tr>
               <td><%= l(day.worked_on, format: :short) %></td>
-              <td><%= $days_of_the_week[day.worked_on.wday] %></td>
-              <% if !current_user.admin? && (Date.current < day.worked_on) %>
-                <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
-                <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
-              <% else %>
-                <td><%= attendance.time_field :started_at, class: "form-control" %></td>
-                <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
-              <% end %>
               <td>
-                <% if day.started_at.present? && day.finished_at.present? %>
-                  <%= working_times(day.started_at, day.finished_at) %>
+                <% if day.worked_on.wday == 6 %>
+                  <%= $days_of_the_week[6] = nil %>
+                  <span style="color: Blue; ">土</span>
+                <% end %>
+                <% if day.worked_on.wday == 0 %>
+                  <%= $days_of_the_week[0] = nil %>
+                  <span style="color: Red; ">日</span>
+                <% end %>
+                <%= $days_of_the_week[day.worked_on.wday] %>
+              </td>
+              <% if after_today_readonly(day) %>
+                <td><%= attendance.time_field :change_started_at, readonly: true, class: "form-control" %></td>
+                <td><%= attendance.time_field :change_finished_at, readonly: true, class: "form-control" %></td>
+              <% else %>
+                <td><%= attendance.time_field :change_started_at, class: "form-control" %></td>
+                <td><%= attendance.time_field :change_finished_at, class: "form-control" %></td>
+              <% end %>
+              <td><%= attendance.check_box :next_day, {} , true, false %></td>
+              <td>
+                <% if day.change_started_at.present? && day.change_finished_at.present? %>
+                  <%= format("%.2f", change_time_working_time(day)) %>
+                <% end %> 
+              </td>
+              <td>
+                <% if after_today_readonly(day) %>
+                  <%= attendance.text_field :note, readonly: true, class: "form-control" %>
+                <% else %>
+                  <%= attendance.text_field :note, placeholder: "入力必須", class: "form-control" %>
                 <% end %>
               </td>
-              <td><%= attendance.text_field :note, class: "form-control" %></td>
+              <td>
+                <% if after_today_readonly(day) %>
+                  <%= attendance.collection_select :confirmation_superior, @superior, :name, :name, { include_blank: true }, disabled: true , class: "form-control" %>
+                <% else %>
+                  <%= attendance.collection_select :confirmation_superior, @superior, :name, :name, { include_blank: true }, class: "form-control" %>
+                <% end %>
+              </td>
+              <%= attendance.hidden_field :worked_request_sign, :value => 1 %>
             </tr>
           <% end %>
         <% end %>
       </tbody>
     </table>
   </div>
-
+  
   <div class="center">
-    <%= f.submit "まとめて更新", class: "btn btn-lg btn-primary" %>
     <%= link_to "キャンセル", user_path(date: @first_day), class: "btn btn-lg btn-default" %>
+    <%= f.submit "編集を保存する", class: "btn btn-lg btn-primary" %>
   </div>
 <% end %>

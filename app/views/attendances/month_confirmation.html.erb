@@ -1,0 +1,132 @@
+<% provide(:title, @user.name) %>
+<div>
+  <table class="table table-bordered table-condensed user-table">
+    <tr>
+      <td>
+      </td>
+      <td>
+        指定勤務開始時間<%= format_basic_info(@user.work_start_time) %><br>
+        指定勤務終了時間<%= format_basic_info(@user.work_end_time) %>
+      </td>
+      <td colspan="3">基本時間<%= format_basic_info(@user.basic_time) %></td>
+      <td>初日:<%= l(@first_day, format: :short) %></td>
+    </tr>
+
+    <tr>
+      <td>所属:<%= @user.department.present? ? @user.department : "未所属" %></td>
+      <td>名前：<%= @user.name %></td>
+      <td>コード</td>
+      <td></td>
+      <td>出勤日数:<%= @worked_sum %></td>
+      <td>締め:<%= l(@last_day, format: :short) %></td>
+    </tr>
+  </table>
+</div>
+
+<div>
+  <table class="table table-bordered table-condensed table-hover" id="table-attendances">
+    <thead>
+      <tr>
+        <td rowspan="3">残業申請</td>
+        <td rowspan="3">日付</td>
+        <td rowspan="3">曜日</td>
+        <td colspan="8">実績</td>
+        <td colspan="6">所定外勤務</td>
+      </tr>
+      <tr>
+        <td colspan="3">出社</td>
+        <td colspan="3">退社</td>
+        <td rowspan="2">在社時間</td>
+        <td rowspan="2">備考</td>
+        <td colspan="2">終了予定時間</td>
+        <td rowspan="2">時間外時間</td>
+        <td rowspan="2">業務処理内容</td>
+        <td rowspan="2">指示者確認㊞</td>
+      </tr>
+      <tr>
+        <td>時</td>
+        <td>分</td>
+        <td></td>
+        <td>時</td>
+        <td>分</td>
+        <td></td>
+        <td>時</td>
+        <td>分</td>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @attendances.each do |day| %>
+        <tr>
+          <td></td>
+          <td><%= l(day.worked_on, format: :short) %></td>
+          <td><%= $days_of_the_week[day.worked_on.wday] %></td>
+          <td><%= day.started_at.hour if day.started_at.present? %></td>
+          <td><%= day.started_at.floor_to(15.minutes).strftime("%M") if day.started_at.present? %></td>
+          <td></td>
+          <td><%= day.finished_at.hour if day.finished_at.present? %></td>
+          <td><%= day.finished_at.floor_to(15.minutes).strftime("%M") if day.finished_at.present? %></td>
+          <td></td>
+          <td>
+            <% if day.started_at.present? && day.finished_at.present? %>
+              <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+              <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
+            <% end %>
+          </td>
+          <td><%= day.note %></td>
+          <td><%= day.scheduled_end_time.strftime("%-H") if day.scheduled_end_time.present? %></td>
+          <td><%= day.scheduled_end_time.floor_to(15.minutes).strftime("%M") if day.scheduled_end_time.present? %></td>
+          <td>
+            <% if day.change_confirmation_status.nil? %>
+              <% if day.scheduled_end_time.present? %>
+                <%= scheduled_over_time(day.scheduled_end_time, @user.work_end_time) %>
+              <% end %>
+            <% end %>
+          </td>
+          <td>
+            <% if day.change_confirmation_status.nil? %>
+              <%= day.business_processing_content %>
+            <% end %>
+          </td>
+          <td>
+            <% if day.change_confirmation_status.nil? %>
+              <%= day.instructor_confirmation{["承認"] => ["勤怠編集承認済み"]} %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+
+    <tfoot>
+      <!--rowspan:縦結合、colspan:横結合-->
+      <tr>
+        <td colspan="2">累計日数</td>
+        <td colspan="2">総合勤務時間</td>
+        <td colspan="2">累計在社時間</td>
+        <td rowspan="2"></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td rowspan="2"></td>
+      </tr>
+      <tr>
+        <td colspan="2"><%= @attendances.count %></td>
+        <td colspan="2"><%= format_basic_info(@user.work_time).to_f * @worked_sum %></td>
+        <td colspan="2"><%= format("%.2f", @total_working_times.to_f) %></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>

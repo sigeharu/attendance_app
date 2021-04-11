@@ -1,0 +1,9 @@
+<% if day.worked_on.wday == 6 %>
+  <%= $days_of_the_week[6] = nil %>
+  <span style="color: Blue; ">土</span>
+<% end %>
+<% if day.worked_on.wday == 0 %>
+  <%= $days_of_the_week[0] = nil %>
+  <span style="color: Red; ">日</span>
+<% end %>
+<%= $days_of_the_week[day.worked_on.wday] %>
