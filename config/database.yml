@@ -26,3 +26,4 @@ production:
   encode: unicode
   pool: 5
   url: <%= ENV['HEROKU_POSTGRESQL_RED_UR'] %>
+  socket: /var/run/postgresql/.s.PGSQL.5432
