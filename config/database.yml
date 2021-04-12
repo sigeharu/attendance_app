@@ -24,5 +24,6 @@ production:
   <<: *default
   adapter: postgresql
   encode: unicode
-  port: 5432
+  pool: 5
   url: <%= ENV['DATABASE_URL'] %>
+  socket: /var/run/postgresql/.s.PGSQL.5432
