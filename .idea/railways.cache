@@ -28,14 +28,6 @@ update_attendance_change_confirmation_user_attendance PATCH  /users/:user_id/att
                                                       PATCH  /users/:user_id/attendances/:id(.:format)                                                attendances#update
                                                       PUT    /users/:user_id/attendances/:id(.:format)                                                attendances#update
                                                       DELETE /users/:user_id/attendances/:id(.:format)                                                attendances#destroy
-                                           user_bases GET    /users/:user_id/bases(.:format)                                                          bases#index
-                                                      POST   /users/:user_id/bases(.:format)                                                          bases#create
-                                       new_user_basis GET    /users/:user_id/bases/new(.:format)                                                      bases#new
-                                      edit_user_basis GET    /users/:user_id/bases/:id/edit(.:format)                                                 bases#edit
-                                           user_basis GET    /users/:user_id/bases/:id(.:format)                                                      bases#show
-                                                      PATCH  /users/:user_id/bases/:id(.:format)                                                      bases#update
-                                                      PUT    /users/:user_id/bases/:id(.:format)                                                      bases#update
-                                                      DELETE /users/:user_id/bases/:id(.:format)                                                      bases#destroy
                                                 users GET    /users(.:format)                                                                         users#index
                                                       POST   /users(.:format)                                                                         users#create
                                              new_user GET    /users/new(.:format)                                                                     users#new
@@ -44,6 +36,14 @@ update_attendance_change_confirmation_user_attendance PATCH  /users/:user_id/att
                                                       PATCH  /users/:id(.:format)                                                                     users#update
                                                       PUT    /users/:id(.:format)                                                                     users#update
                                                       DELETE /users/:id(.:format)                                                                     users#destroy
+                                                bases GET    /bases(.:format)                                                                         bases#index
+                                                      POST   /bases(.:format)                                                                         bases#create
+                                            new_basis GET    /bases/new(.:format)                                                                     bases#new
+                                           edit_basis GET    /bases/:id/edit(.:format)                                                                bases#edit
+                                                basis GET    /bases/:id(.:format)                                                                     bases#show
+                                                      PATCH  /bases/:id(.:format)                                                                     bases#update
+                                                      PUT    /bases/:id(.:format)                                                                     bases#update
+                                                      DELETE /bases/:id(.:format)                                                                     bases#destroy
                         rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                  action_mailbox/ingresses/postmark/inbound_emails#create
                            rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                     action_mailbox/ingresses/relay/inbound_emails#create
                         rails_sendgrid_inbound_emails POST   /rails/action_mailbox/sendgrid/inbound_emails(.:format)                                  action_mailbox/ingresses/sendgrid/inbound_emails#create

@@ -32,7 +32,7 @@ Rails.application.routes.draw do
         patch 'update_month_approval'
       end
     end
-    resources :bases do
-    end
+  end
+  resources :bases do
   end
 end
