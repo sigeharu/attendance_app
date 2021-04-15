@@ -20,6 +20,7 @@ class User < ApplicationRecord
 
   scope :find_superior, -> (user) { where(superior: true).where.not(name: user.name) }
 
+
   # 渡された文字列のハッシュ値を返します。
   def User.digest(string)
     cost = 

@@ -11,6 +11,7 @@ class Attendance < ApplicationRecord
   scope :user_month_approval, -> (user) { where(month_status: '申請中', month_superior: user.name).user_id_group }
   scope :user_overtime_application, -> (user) { where(instructor_confirmation: "申請中",
                                                       instructor: user.name).user_id_group }
+  scope :find_applying, -> { where(confirmation_status: "申請中" || "なし") }
 
   
   # 出勤時間が存在しない場合、退勤時間は無効

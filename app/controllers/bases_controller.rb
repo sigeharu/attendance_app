@@ -19,7 +19,7 @@ class BasesController < ApplicationController
       flash[:success] = '拠点情報を作成しました'
       redirect_to bases_url
     else
-      flash[:notice] = '拠点情報の作成に失敗しました'
+      flash[:danger] = '拠点情報の作成に失敗しました'
       redirect_to bases_url
     end
   end
@@ -29,12 +29,13 @@ class BasesController < ApplicationController
   def edit; end
 
   def update
+
     if @base.update_attributes(base_params)
       flash[:success] = '拠点情報を更新しました'
       redirect_to bases_url
     else
-      flash[:danger] = '更新に失敗しました'
-      render :index
+      flash[:danger] = '更新できませんでした'
+      redirect_to bases_url
     end
   end
 

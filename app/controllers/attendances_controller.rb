@@ -201,7 +201,7 @@ class AttendancesController < ApplicationController
           superior = attendance.month_superior
           if item[:month_status] == "承認"
             superior = "#{superior}により承認済"
-          elsif item[:month_stats] == "否認"
+          elsif item[:month_status] == "否認"
             superior = "#{superior}により否認"
           end
           attendance.change_month_superior = superior

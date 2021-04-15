@@ -45,8 +45,11 @@ class UsersController < ApplicationController
     @worked_sum = @attendances.where.not(started_at: nil).count
     @attendance = Attendance.find(params[:id])
     @month_superior = Attendance.where(month_superior: @user.name)
+    @month_superior_user = @user.attendances.where.not(month_superior: @user.name)
     @confirmation_superior = Attendance.where(confirmation_superior: @user.name)
-    @overtime_superior = Attendance.where(instructor_confirmation: @user.name)
+    @confirmation_superior_user = @user.attendances.where.not(confirmation_superior: @user.name)
+    @overtime_superior = Attendance.where(instructor: @user.name)
+    @overtime_superior_user = @user.attendances.where.not(instructor: @user.name)
     @month_status_apply = Attendance.where(month_superior: @user.name, month_status: '申請中')
     @confirmation_status_apply = Attendance.where(confirmation_superior: @user.name, confirmation_status: '申請中')
                                            .or(Attendance.where(confirmation_superior: @user.name, confirmation_status: 'なし'))
@@ -54,7 +57,6 @@ class UsersController < ApplicationController
     @month_approval = Attendance.where(month_modify: true)
     @superior = User.where(superior: true).where.not(name: current_user.name)
     @check_month_superior = @user.attendances.where(apply_month: @first_day)
-
   end
 
   # csv出力

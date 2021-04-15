@@ -15,13 +15,13 @@
           <%= form_with(model: @base, local: true, method: :patch) do |f| %>
             <%= render 'shared/error_messages_bases', object: @base %>
             
-            <%= f.label :office_number, class: "label-#{yield(:class_text)}" %>
+            <%= f.label "拠点番号", class: "label-#{yield(:class_text)}" %>
             <%= f.text_field :office_number, class: "form-control" %>
             
-            <%= f.label :office_name, class: "label-#{yield(:class_text)}" %>
+            <%= f.label "拠点名", class: "label-#{yield(:class_text)}" %>
             <%= f.text_field :office_name, class: "form-control" %>
             
-            <%= f.label :office_category, class: "label-#{yield(:class_text)}" %>
+            <%= f.label "拠点種類", class: "label-#{yield(:class_text)}" %>
             <%= f.text_field :office_category, class: "form-control" %>
           
             <div id="add=info">
