@@ -11,8 +11,8 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: %i[show]
 
   def index
-    @users = User.paginate(page: params[:page], per_page: 20).where.not(id: current_user.id)
-    @user = @users.params[:name] if params[:name].present?
+    @users = User.paginate(page: params[:page], per_page: 20).where.not(id: current_user.id).order(id: "ASC")
+
     @user = if params[:id].present?
               User.find_by(id: @users.id)
             else

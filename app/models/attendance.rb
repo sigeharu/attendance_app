@@ -17,10 +17,7 @@ class Attendance < ApplicationRecord
   validate :finished_at_is_invalid_without_a_started_at
   # 出勤・退勤時間どちらも存在する時、出勤時間より退勤時間は無効
   validate :started_at_than_finished_at_fast_if_invalid
-  # 勤怠変更申請で出勤時間が存在しない場合､退勤時間は無効
-  validate :change_finished_at_is_invalid_without_a_change_started_at
-  # 勤怠変更申請で出勤･退勤時間どちらも存在する時､出勤時間より退勤時間は無効
-  validate :change_started_at_than_change_finished_at_fast_if_invalid
+
 
   def finished_at_is_invalid_without_a_started_at
     errors.add(:started_at, "が必要です") if started_at.blank? && finished_at.present?
@@ -40,8 +37,8 @@ class Attendance < ApplicationRecord
 
   def change_started_at_than_change_finished_at_fast_if_invalid
     if change_started_at.present? && change_finished_at.present?
-      if change_started_at > change_finished_at
-        errors.add(:change_started_at, "より早い退社時間は無効です") if confirmation_next_day == "false"
+      if confirmation_next_day == "false"
+        errors.add(:change_started_at, "より早い退社時間は無効です") if change_started_at > change_finished_at
       end
     end
   end
