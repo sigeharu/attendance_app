@@ -9,7 +9,7 @@ class AttendancesController < ApplicationController
   def show
     @year = (2020..2035).map
     @month = (1..12).map
-    @log = log_month(@user)
+    @log = log_month(@user).order(worked_on: "ASC")
   end
 
   def update
@@ -38,26 +38,40 @@ class AttendancesController < ApplicationController
   def update_one_month
     attendances = []
     change_confirmation_params.each do |id, item|
-      if item[:confirmation_superior].present?
-        if item[:change_started_at].present? && item[:change_finished_at].present? &&
-          item[:note].present?
+      if item[:confirmation_superior].present? && item[:note].present?
+        if item[:change_started_at].blank? && item[:change_finished_at].blank?
           Attendance.where(id: id.to_i).each do |attendance|
-            attendance.change_started_at = item[:change_started_at]
-            attendance.change_finished_at = item[:change_finished_at]
+            attendance.change_started_at = nil
+            attendance.change_finished_at = nil
             attendance.note = item[:note]
-            attendance.next_day = item[:next_day]
+            attendance.confirmation_next_day = item[:confirmation_next_day]
             attendance.worked_request_sign = item[:worked_request_sign]
             attendance.confirmation_superior = item[:confirmation_superior]
             attendance.confirmation_status = "申請中"
             attendances << attendance
           end
+        elsif (item[:change_started_at].present? && item[:change_finished_at].present?)
+          if (item[:change_started_at] < item[:change_finished_at]) || (item[:confirmation_next_day] == "true")
+            Attendance.where(id: id.to_i).each do |attendance|
+              attendance.change_started_at = item[:change_started_at]
+              attendance.change_finished_at = item[:change_finished_at]
+              attendance.note = item[:note]
+              attendance.confirmation_next_day = item[:confirmation_next_day]
+              attendance.worked_request_sign = item[:worked_request_sign]
+              attendance.confirmation_superior = item[:confirmation_superior]
+              attendance.confirmation_status = "申請中"
+              attendances << attendance
+            end
+          else
+            err = flash[:danger] = "内容に不備があったため申請できませんでした｡"
+            redirect_to user_url(@user) and return
+          end
         else
-          flash[:danger] = "内容に不備があったため申請できませんでした｡"
-          redirect_to user_url(@user) and return
+          err
         end
       end
     end
-    Attendance.import attendances, on_duplicate_key_update: [:change_started_at, :change_finished_at, :note, :next_day, :worked_request_sign, :confirmation_superior, :confirmation_status]
+    Attendance.import attendances, on_duplicate_key_update: [:change_started_at, :change_finished_at, :note, :confirmation_next_day, :worked_request_sign, :confirmation_superior, :confirmation_status]
     flash[:success] = "勤怠情報変更を申請しました｡"
     redirect_to user_url(@user) and return
   end
@@ -71,18 +85,24 @@ class AttendancesController < ApplicationController
     status_count = []
     confirmation_approval_params.each do |id, item|
       if item[:confirmation_modify].to_i == 1
-        unless item[:confirmation_status] == "申請中"
+        unless (item[:confirmation_status] == "申請中") || (item[:confirmation_status] == "なし")
           attendance = Attendance.find(id)
           attendance.change_boss = attendance.confirmation_superior
           attendance.confirmation_superior = nil
           attendance.confirmation_status = item[:confirmation_status]
           if item[:confirmation_status] == "承認"
+            attendance.before_started_at = attendance.started_at
+            attendance.before_finished_at = attendance.finished_at
             attendance.started_at = attendance.change_started_at
             attendance.finished_at = attendance.change_finished_at
             attendance.approval_date = Date.current
+            if attendance.confirmation_next_day == true
+              attendance.next_day = true
+            end
           else
             attendance.change_started_at = nil
             attendance.change_finished_at = nil
+            attendance.confirmation_next_day = false
           end
           status_count.push(item[:confirmation_status])
           attendances << attendance
@@ -91,8 +111,8 @@ class AttendancesController < ApplicationController
     end
     Attendance.import attendances, on_duplicate_key_update:
       [:change_boss, :confirmation_superior, :confirmation_status,
-       :started_at, :finished_at, :approval_date,
-       :change_started_at, :change_finished_at]
+       :started_at, :finished_at, :approval_date, :next_day, :confirmation_next_day,
+       :change_started_at, :change_finished_at, :before_started_at, :before_finished_at]
     count_flash(status_count, "勤怠変更申請")
     redirect_to user_url(@user)
   end
@@ -105,7 +125,8 @@ class AttendancesController < ApplicationController
 
   def update_overtime_application
     @attendance = Attendance.find(params[:id])
-    if @attendance.update!(overtime_params)
+    if overtime_params[:instructor].present?
+      @attendance.update!(overtime_params)
       @attendance.update!(instructor_confirmation: "申請中")
       flash[:success] = "残業申請しました"
     else
@@ -123,16 +144,17 @@ class AttendancesController < ApplicationController
     status_count = []
     overtime_apply_params.each do |id, item|
       if item[:change_box] == "true"
-        unless item[:instructor_confirmation] == "申請中"
+        unless (item[:instructor_confirmation] == "申請中") || (item[:instructor_confirmation] == "なし")
           attendance = Attendance.find(id)
           attendance.overtime_boss = attendance.instructor
           attendance.instructor = nil
           attendance.instructor_confirmation = item[:instructor_confirmation]
+          attendance.next_day = attendance.overtime_next_day
           if item[:instructor_confirmation] == "否認"
             attendance.check_overtime_application = 2
             attendance.scheduled_end_time = nil
             attendance.business_processing_content = nil
-            attendance.next_day = nil
+            attendance.overtime_next_day = nil
           else
             attendance.check_overtime_application = 1
           end
@@ -154,7 +176,7 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.where(user_id: month_superior_params[:user_id],
                                    worked_on: params[:date])
     if month_superior_params[:month_superior].blank?
-      flash[:danger] = '申請先を選択してください｡'
+      flash[:danger] = '所属長を選択してください｡'
     else
       @attendance.update_all(month_superior_params)
       superior = month_superior_params[:month_superior]
@@ -173,20 +195,22 @@ class AttendancesController < ApplicationController
     attendances = []
     status_count = []
     month_approval_params.each do |id, item|
-      if (item[:month_modify] == "true") && (item[:month_status] != "申請中")
-        attendance = Attendance.find(id)
-        superior = attendance.month_superior
-        if item[:month_status] == "承認"
-          superior = "#{superior}により承認済"
-        else
-          superior = "#{superior}により否認"
+      unless item[:month_status] == "なし"
+        if (item[:month_modify] == "true") && (item[:month_status] != "申請中")
+          attendance = Attendance.find(id)
+          superior = attendance.month_superior
+          if item[:month_status] == "承認"
+            superior = "#{superior}により承認済"
+          elsif item[:month_stats] == "否認"
+            superior = "#{superior}により否認"
+          end
+          attendance.change_month_superior = superior
+          attendance.month_status = item[:month_status]
+          attendance.check_month_approval = 2
+          attendance.month_superior = nil
+          status_count.push(item[:month_status])
+          attendances << attendance
         end
-        attendance.change_month_superior = superior
-        attendance.month_status = item[:month_status]
-        attendance.check_month_approval = 2
-        attendance.month_superior = nil
-        status_count.push(item[:month_status])
-        attendances << attendance
       end
     end
     Attendance.import attendances, on_duplicate_key_update:
@@ -210,7 +234,7 @@ class AttendancesController < ApplicationController
 
     # 勤怠情報変更申請を扱う
     def change_confirmation_params
-      params.require(:user).permit(attendances: [:change_started_at, :change_finished_at, :note, :next_day,
+      params.require(:user).permit(attendances: [:change_started_at, :change_finished_at, :note, :confirmation_next_day,
                                                  :confirmation_superior, :confirmation_status, :worked_request_sign])[:attendances]
     end
 
@@ -226,7 +250,7 @@ class AttendancesController < ApplicationController
     
     # 残業情報を扱う
     def overtime_params
-      params.require(:attendance).permit(:worked_on, :scheduled_end_time, :next_day,
+      params.require(:attendance).permit(:worked_on, :scheduled_end_time, :overtime_next_day,
                                          :business_processing_content, :instructor)
     end
 

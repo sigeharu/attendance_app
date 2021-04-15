@@ -20,7 +20,7 @@ module AttendancesHelper
   end
 
   def change_time_working_time(attendance)
-    unless attendance.next_day?
+    unless attendance.confirmation_next_day?
       format("%.2f", (((attendance.change_finished_at.floor_to(15.minutes) - attendance.change_started_at.floor_to(15.minutes)) / 60) / 60.0))
     else
       format("%.2f", (((attendance.change_finished_at.floor_to(15.minutes) - attendance.change_started_at.floor_to(15.minutes)) / 60) / 60.0) + 24)
@@ -28,6 +28,21 @@ module AttendancesHelper
   end
 
   def scheduled_over_time(day, user)
+    day.scheduled_end_time.floor_to(15.minutes)
+    finish1 = day.scheduled_end_time.strftime('%H').to_i * 60
+    finish2 = day.scheduled_end_time.floor_to(15.minutes).strftime('%M').to_i
+    work1 = user.work_end_time.strftime('%H').to_i * 60
+    work2 = user.work_end_time.floor_to(15.minutes).strftime('%M').to_i
+
+    a = (finish1 + finish2) - (work1 + work2)
+    unless day.overtime_next_day?
+      format("%.2f", a/60.to_f)
+    else
+      format("%.2f", a/60.to_f + 24)
+    end
+  end
+
+  def scheduled_over_time_show(day, user)
     day.scheduled_end_time.floor_to(15.minutes)
     finish1 = day.scheduled_end_time.strftime('%H').to_i * 60
     finish2 = day.scheduled_end_time.floor_to(15.minutes).strftime('%M').to_i

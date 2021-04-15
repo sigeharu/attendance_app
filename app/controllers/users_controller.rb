@@ -11,7 +11,7 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: %i[show]
 
   def index
-    @users = User.paginate(page: params[:page], per_page: 20)
+    @users = User.paginate(page: params[:page], per_page: 20).where.not(id: current_user.id)
     @user = @users.params[:name] if params[:name].present?
     @user = if params[:id].present?
               User.find_by(id: @users.id)
@@ -22,7 +22,7 @@ class UsersController < ApplicationController
 
   def user_update
     @user = User.find(params[:id])
-    if @user.update_attributes(user_params)
+    if @user.update!(user_params)
       flash[:success] = 'ユーザー情報を更新しました｡'
       redirect_to users_url
     else

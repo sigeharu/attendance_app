@@ -28,10 +28,10 @@
                   <tbody>
                     <tr>
                       <td><%= "#{day.apply_month.to_date.mon}月" %></td>
-                      <td><%= attendance.select :month_status, %w[申請中 承認 否認],
+                      <td><%= attendance.select :month_status, %w[申請中 承認 否認 なし],
                                               {include_blank: false}, class: "form-control" %></td>
                       <td><%= attendance.check_box :month_modify, {}, "true", "false" %></td>
-                      <td><%= link_to "確認", user_path(day.user_id, date: day.worked_on),
+                      <td><%= link_to "確認", user_path(day.user_id, date: day.worked_on.beginning_of_month),
                                       target: :_blank, rel: "noopener noreferrer", class: "btn btn-primary" %></td>
                     </tr>
                   </tbody>

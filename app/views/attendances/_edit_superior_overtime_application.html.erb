@@ -41,10 +41,10 @@
                         <%= "#{scheduled_over_time(day, user)}時間" %>
                       </td>
                       <td><%= day.business_processing_content %></td>
-                      <td><%= attendance.select :instructor_confirmation, %w[申請中 承認 否認],
+                      <td><%= attendance.select :instructor_confirmation, %w[申請中 承認 否認 なし],
                                                 {}, class: "form-control" %></td>
                       <td><%= attendance.check_box :change_box, {}, "true", "false" %></td>
-                      <td><%= link_to "確認", user_path(day.user_id, date: day.worked_on),
+                      <td><%= link_to "確認", user_path(day.user_id, date: day.worked_on.beginning_of_month),
                                       target: :_blank, rel: "noopener noreferrer", class: "btn btn-primary" %></td>
                     </tr>
                   </tbody>

@@ -38,7 +38,7 @@
                 <td><%= attendance.time_field :change_started_at, class: "form-control" %></td>
                 <td><%= attendance.time_field :change_finished_at, class: "form-control" %></td>
               <% end %>
-              <td><%= attendance.check_box :next_day, {} , true, false %></td>
+              <td><%= attendance.check_box :confirmation_next_day, {} , true, false %></td>
               <td>
                 <% if day.change_started_at.present? && day.change_finished_at.present? %>
                   <%= format("%.2f", change_time_working_time(day)) %>

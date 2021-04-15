@@ -54,15 +54,23 @@
                       <td><%= day.started_at.floor_to(15.minutes).strftime("%M") if day.started_at.present? %></td>
                       <td><%= day.finished_at.hour if day.finished_at.present? %></td>
                       <td><%= day.finished_at.floor_to(15.minutes).strftime("%M") if day.finished_at.present? %></td>
-                      <td><%= day.change_started_at.hour %></td>
-                      <td><%= day.change_started_at.floor_to(15.minutes).strftime("%M") %></td>
-                      <td><%= day.change_finished_at.hour %></td>
-                      <td><%= day.change_finished_at.floor_to(15.minutes).strftime("%M") %></td>
+                      <td><%= day.change_started_at&.hour %></td>
+                      <td>
+                        <% unless day.change_started_at.nil? %>
+                          <%= day.change_started_at.floor_to(15.minutes).strftime("%M") %>
+                        <% end %>
+                      </td>
+                      <td><%= day.change_finished_at&.hour %></td>
+                      <td>
+                        <% unless day.change_finished_at.nil? %>
+                          <%= day.change_finished_at.floor_to(15.minutes).strftime("%M") %>
+                        <% end %>
+                      </td>
                       <td><%= day.note %></td>
-                      <td><%= attendance.select :confirmation_status, %w[申請中 承認 否認],
+                      <td><%= attendance.select :confirmation_status, %w[申請中 承認 否認 なし],
                                        { include_blank: false }, class: "form-control" %></td>
                       <td><%= attendance.check_box :confirmation_modify, {}, checked_value = "1", unchecked_value = "0" %></td>
-                      <td><%= link_to "確認", user_path(day.user_id, date: day.worked_on), target: :_blank, rel: "noopener noreferrer" , class: "btn btn-primary" %></td>
+                      <td><%= link_to "確認", user_path(day.user_id, date: day.worked_on.beginning_of_month), target: :_blank, rel: "noopener noreferrer" , class: "btn btn-primary" %></td>
                     </tr>
                   <% end %>
                 <% end %>
