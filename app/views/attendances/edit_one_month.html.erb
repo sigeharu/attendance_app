@@ -34,9 +34,12 @@
               <% if after_today_readonly(day) %>
                 <td><%= attendance.time_field :change_started_at, readonly: true, class: "form-control" %></td>
                 <td><%= attendance.time_field :change_finished_at, readonly: true, class: "form-control" %></td>
+              <% elsif day.change_started_at.blank? && day.change_started_at.blank? %>
+                <td><%= attendance.time_select :change_started_at, {include_blank: true, minute_step: 15}, {class: 'form-control', style: 'display: inline-block;width: auto;'} %></td>
+                <td><%= attendance.time_select :change_finished_at, {include_blank: true, minute_step: 15}, {class: 'form-control', style: 'display: inline-block;width: auto;'} %></td>
               <% else %>
-                <td><%= attendance.time_field :change_started_at, class: "form-control" %></td>
-                <td><%= attendance.time_field :change_finished_at, class: "form-control" %></td>
+                <td><%= attendance.time_select :change_started_at, {minute_step: 15}, {class: 'form-control', style: 'display: inline-block;width: auto;'} %></td>
+                <td><%= attendance.time_select :change_finished_at, {minute_step: 15}, {class: 'form-control', style: 'display: inline-block;width: auto;'} %></td>
               <% end %>
               <td><%= attendance.check_box :confirmation_next_day, {} , true, false %></td>
               <td>

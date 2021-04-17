@@ -165,7 +165,7 @@
             <% end %>
             <%= $days_of_the_week[day.worked_on.wday] %><td><%= day.started_at.hour if day.started_at.present? %>
           </td>
-          <td><%= day.started_at.floor_to(15.minutes).strftime("%M") if day.started_at.present? %></td>
+          <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td>
           <td>
             <% if current_user?(@user) %>
               <% if (btn_text = attendance_state(day)) %>
@@ -174,7 +174,7 @@
             <% end %>
           </td>
           <td><%= day.finished_at.hour if day.finished_at.present? %></td>
-          <td><%= day.finished_at.floor_to(15.minutes).strftime("%M") if day.finished_at.present? %></td>
+          <td><%= day.finished_at.strftime("%M") if day.finished_at.present? %></td>
           <td></td>
           <td>
             <% if day.started_at.present? && day.finished_at.present? %>
@@ -190,8 +190,8 @@
             <% end %>
           </td>
           <% if day.check_overtime_application == 1 %>
-            <td><%= day.scheduled_end_time.strftime("%-H") if day.scheduled_end_time.present? %></td>
-            <td><%= day.scheduled_end_time.floor_to(15.minutes).strftime("%M") if day.scheduled_end_time.present? %></td>
+            <td><%= day.scheduled_end_time.strftime("%H") if day.scheduled_end_time.present? %></td>
+            <td><%= day.scheduled_end_time.strftime("%M") if day.scheduled_end_time.present? %></td>
             <td><%= scheduled_over_time_show(day, @user) %></td>
             <td class="col-md-1"><%= day.business_processing_content %></td>
           <% else %>

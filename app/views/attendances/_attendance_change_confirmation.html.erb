@@ -51,19 +51,19 @@
                       <td><%= l(day.worked_on, format: :short) %></td>
                       <td><%= render 'users/days_of_the_week', day: day %></td>
                       <td><%= day.started_at.hour if day.started_at.present? %></td>
-                      <td><%= day.started_at.floor_to(15.minutes).strftime("%M") if day.started_at.present? %></td>
+                      <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td>
                       <td><%= day.finished_at.hour if day.finished_at.present? %></td>
-                      <td><%= day.finished_at.floor_to(15.minutes).strftime("%M") if day.finished_at.present? %></td>
+                      <td><%= day.finished_at.strftime("%M") if day.finished_at.present? %></td>
                       <td><%= day.change_started_at&.hour %></td>
                       <td>
                         <% unless day.change_started_at.nil? %>
-                          <%= day.change_started_at.floor_to(15.minutes).strftime("%M") %>
+                          <%= day.change_started_at.strftime("%M") %>
                         <% end %>
                       </td>
                       <td><%= day.change_finished_at&.hour %></td>
                       <td>
                         <% unless day.change_finished_at.nil? %>
-                          <%= day.change_finished_at.floor_to(15.minutes).strftime("%M") %>
+                          <%= day.change_finished_at.strftime("%M") %>
                         <% end %>
                       </td>
                       <td><%= day.note %></td>

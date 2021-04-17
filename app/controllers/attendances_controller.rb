@@ -1,3 +1,5 @@
+require "date"
+
 class AttendancesController < ApplicationController
   before_action :set_user, except: [:update, :edit_overtime_application, :update_overtime_application]
   before_action :logged_in_user, only: [:update, :edit_one_month]
@@ -16,13 +18,13 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     # 出勤時間が未登録であることを判定します。
     if @attendance.started_at.nil?
-      if @attendance.update_attributes(started_at: Time.current.change(sec: 0))
+      if @attendance.update_attributes(started_at: Time.current.change(sec: 0).floor_to(15.minutes))
         flash[:info] = "おはようございます！"
       else
         flash[:danger] = UPDATE_ERROR_MSG
       end
     elsif @attendance.finished_at.nil?
-      if @attendance.update_attributes(finished_at: Time.current.change(sec: 0))
+      if @attendance.update_attributes(finished_at: Time.current.change(sec: 0).floor_to(15.minutes))
         flash[:info] = "お疲れさまでした。"
       else
         flash[:danger] = UPDATE_ERROR_MSG
@@ -39,12 +41,21 @@ class AttendancesController < ApplicationController
     attendances = []
     change_confirmation_params.each do |id, item|
       if item[:confirmation_superior].present? && item[:note].present?
+        if item["change_started_at(4i)"].empty? && item["change_started_at(5i)"].empty?
+          item[:change_started_at] = nil
+        else
+          item[:change_started_at] = DateTime.new(2020, 1, 1, item["change_started_at(4i)"].to_i, item["change_started_at(5i)"].to_i, 0, '+9:00')
+        end
+        if item["change_finished_at(4i)"].empty? && item["change_finished_at(5i)"].empty?
+          item[:change_finished_at] = nil
+        else
+          item[:change_finished_at] = DateTime.new(2020, 1, 1, item["change_finished_at(4i)"].to_i, item["change_finished_at(5i)"].to_i, 0, '+9:00')
+        end
         if item[:change_started_at].blank? && item[:change_finished_at].blank?
           Attendance.where(id: id.to_i).each do |attendance|
             attendance.change_started_at = nil
             attendance.change_finished_at = nil
             attendance.note = item[:note]
-            attendance.confirmation_next_day = item[:confirmation_next_day]
             attendance.worked_request_sign = item[:worked_request_sign]
             attendance.confirmation_superior = item[:confirmation_superior]
             attendance.confirmation_status = "申請中"
@@ -53,8 +64,8 @@ class AttendancesController < ApplicationController
         elsif (item[:change_started_at].present? && item[:change_finished_at].present?)
           if (item[:change_started_at] < item[:change_finished_at]) || (item[:confirmation_next_day] == "true")
             Attendance.where(id: id.to_i).each do |attendance|
-              attendance.change_started_at = item[:change_started_at]
-              attendance.change_finished_at = item[:change_finished_at]
+              attendance.change_started_at = item[:change_started_at].change(sec: 0)
+              attendance.change_finished_at = item[:change_finished_at].change(sec: 0)
               attendance.note = item[:note]
               attendance.confirmation_next_day = item[:confirmation_next_day]
               attendance.worked_request_sign = item[:worked_request_sign]
@@ -71,7 +82,8 @@ class AttendancesController < ApplicationController
         end
       end
     end
-    Attendance.import attendances, on_duplicate_key_update: [:change_started_at, :change_finished_at, :note, :confirmation_next_day, :worked_request_sign, :confirmation_superior, :confirmation_status]
+    Attendance.import attendances, on_duplicate_key_update: [:change_started_at, :change_finished_at,
+                                                             :note, :confirmation_next_day, :worked_request_sign, :confirmation_superior, :confirmation_status]
     flash[:success] = "勤怠情報変更を申請しました｡"
     redirect_to user_url(@user) and return
   end
@@ -270,6 +282,16 @@ class AttendancesController < ApplicationController
       end
       log_mon = user.attendances.where(worked_on: log.beginning_of_month..log.end_of_month)
       log_mon.where(confirmation_status: "承認")
+    end
+
+    def started_at_join
+      unless item["change_started_at(1i)"].empty? && item["change_started_at(2i)"].empty? && item["change_started_at(3i)"].empty? && item["change_started_at(4i)"].empty? && item["change_started_at(5i)"].empty?
+        Time.new(item["change_started_at(1i)"].to_i, item["change_started_at(2i)"].to_i, item["change_started_at(3i)"], item["change_started_at(4i)"].to_i, item["change_started_at(5i)"].to_i)
+      end
+    end
+
+    def finished_at_join
+
     end
 
     # お知らせ承認後のカウントするフラッシュ表示

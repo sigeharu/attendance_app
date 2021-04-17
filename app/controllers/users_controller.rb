@@ -89,19 +89,19 @@ class UsersController < ApplicationController
           values = [
             attendance.worked_on_date,
             "",
-            attendance.finished_at_time
+            attendance.finished_at_time.strftime("%H:%M")
           ]
         elsif attendance.finished_at.blank?
           values = [
             attendance.worked_on_date,
-            attendance.started_at_time,
+            attendance.started_at_time.strftime("%H:%M"),
             ""
           ]
         else
           values = [
             attendance.worked_on_date,
-            attendance.started_at_time,
-            attendance.finished_at_time
+            attendance.started_at_time.strftime("%H:%M"),
+            attendance.finished_at_time.strftime("%H:%M")
           ]
         end
 

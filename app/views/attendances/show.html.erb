@@ -24,7 +24,6 @@
           <td colspan="3">変更後出社時間</td>
           <td colspan="3">変更後退社時間</td>
           <td>承認者</td>
-          <td>承認日</td>
         </tr>
         </thead>
         <tbody>
@@ -37,7 +36,6 @@
               <td colspan="3"><%= day.started_at.floor_to(15.minutes).strftime("%H:%M") if day.started_at.present? %></td>
               <td colspan="3"><%= day.finished_at.floor_to(15.minutes).strftime("%H:%M") if day.finished_at.present? %></td>
               <td><%= day.change_boss %></td>
-              <td colspan="3"><%= day.approval_date.strftime('%Y/%m/%d') if day.approval_date.present? %></td>
             </tr>
           <% end %>
         <% end %>
