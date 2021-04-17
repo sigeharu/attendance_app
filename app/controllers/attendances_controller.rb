@@ -1,7 +1,7 @@
 require "date"
 
 class AttendancesController < ApplicationController
-  before_action :set_user, except: [:update, :edit_overtime_application, :update_overtime_application]
+  before_action :set_user, except: [:update, :update_overtime_application]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :superior_or_correct_user, only: [:edit_one_month, :update_one_month]
   before_action :set_one_month, only: [:show, :edit_one_month]
@@ -74,11 +74,12 @@ class AttendancesController < ApplicationController
               attendances << attendance
             end
           else
-            err = flash[:danger] = "内容に不備があったため申請できませんでした｡"
+            flash[:danger] = "内容に不備があったため申請できませんでした｡"
             redirect_to user_url(@user) and return
           end
         else
-          err
+          flash[:danger] = "内容に不備があったため申請できませんでした｡"
+          redirect_to user_url(@user) and return
         end
       end
     end
@@ -247,7 +248,7 @@ class AttendancesController < ApplicationController
     # 勤怠情報変更申請を扱う
     def change_confirmation_params
       params.require(:user).permit(attendances: [:change_started_at, :change_finished_at, :note, :confirmation_next_day,
-                                                 :confirmation_superior, :confirmation_status, :worked_request_sign])[:attendances]
+                                                 :confirmation_superior, :confirmation_status, :worked_request_sign])
     end
 
     # 勤怠変更申請を承認する
