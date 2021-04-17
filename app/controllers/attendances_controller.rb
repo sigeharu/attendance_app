@@ -131,7 +131,8 @@ class AttendancesController < ApplicationController
   end
   
   def edit_overtime_application
-    @attendance = Attendance.find(params[:id])
+    @user = User.find(params[:user_id])
+    @attendance = @user.attendances.find_by(worked_on: params[:date])
     @superior = User.find_superior(current_user)
   end
 
