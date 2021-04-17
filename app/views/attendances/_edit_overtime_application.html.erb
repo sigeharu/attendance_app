@@ -1,7 +1,7 @@
 <% provide(:class_text, 'overtime-application' ) %>
 <% provide(:button_text, '変更を送信する' ) %>
 
-<%= form_with(model: @attendance, url: update_overtime_application_user_attendance_path, local: true, method: :patch) do |f| %>
+<%= form_with(model: @attendance, url: update_overtime_application_user_attendance_path(current_user, date: @attendance.worked_on), local: true, method: :patch) do |f| %>
   <div class="modal-dialog modal-lg modal-dialog-center">
     <div class="modal-content">
       <div class="modal-header">

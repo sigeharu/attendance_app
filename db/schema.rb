@@ -67,10 +67,10 @@ ActiveRecord::Schema.define(version: 2021_04_14_113107) do
     t.string "remember_digest"
     t.boolean "admin", default: false
     t.string "department"
-    t.datetime "basic_time", default: "2021-04-11 23:00:00"
-    t.datetime "work_time", default: "2021-04-11 22:30:00"
-    t.datetime "work_start_time", default: "2021-04-12 00:00:00"
-    t.datetime "work_end_time", default: "2021-04-12 09:00:00"
+    t.datetime "basic_time", default: "2021-04-16 23:00:00"
+    t.datetime "work_time", default: "2021-04-16 22:30:00"
+    t.datetime "work_start_time", default: "2021-04-17 00:00:00"
+    t.datetime "work_end_time", default: "2021-04-17 09:00:00"
     t.integer "employee_number"
     t.integer "card_id"
     t.boolean "superior", default: false

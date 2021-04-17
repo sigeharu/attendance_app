@@ -131,16 +131,16 @@ class AttendancesController < ApplicationController
   end
   
   def edit_overtime_application
-    @user = User.find(params[:user_id])
-    @attendance = @user.attendances.find_by(worked_on: params[:date])
+    @attendance = current_user.attendances.find_by(worked_on: params[:date])
     @superior = User.find_superior(current_user)
   end
 
   def update_overtime_application
-    @attendance = Attendance.find(params[:id])
+    @attendance = current_user.attendances.find_by(worked_on: params[:date])
     if overtime_params[:instructor].present?
-      @attendance.update!(overtime_params)
-      @attendance.update!(instructor_confirmation: "申請中")
+      @attendance.assign_attributes(overtime_params)
+      @attendance.assign_attributes(instructor_confirmation: "申請中", )
+      @attendance.save
       flash[:success] = "残業申請しました"
     else
       flash[:danger] = "申請をキャンセルしました。"
@@ -283,16 +283,6 @@ class AttendancesController < ApplicationController
       end
       log_mon = user.attendances.where(worked_on: log.beginning_of_month..log.end_of_month)
       log_mon.where(confirmation_status: "承認")
-    end
-
-    def started_at_join
-      unless item["change_started_at(1i)"].empty? && item["change_started_at(2i)"].empty? && item["change_started_at(3i)"].empty? && item["change_started_at(4i)"].empty? && item["change_started_at(5i)"].empty?
-        Time.new(item["change_started_at(1i)"].to_i, item["change_started_at(2i)"].to_i, item["change_started_at(3i)"], item["change_started_at(4i)"].to_i, item["change_started_at(5i)"].to_i)
-      end
-    end
-
-    def finished_at_join
-
     end
 
     # お知らせ承認後のカウントするフラッシュ表示
