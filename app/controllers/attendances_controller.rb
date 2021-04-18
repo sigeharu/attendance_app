@@ -93,7 +93,7 @@ class AttendancesController < ApplicationController
   end
 
   def attendance_change_confirmation
-    @attendances = Attendance.user_change_confirmation(@user)
+    @attendances = Attendance.where(confirmation_status: '申請中', confirmation_superior: current_user.name).order(:worked_on).group_by(&:user_id)
   end
 
   def update_attendance_change_confirmation
