@@ -62,7 +62,11 @@ class User < ApplicationRecord
       user = find_by(id: row["id"]) || new
       # CSVからデータを取得し、設定する
       user.attributes = row.to_hash.slice(*updatable_attributes)
-      user.save!
+      if user.valid?
+        user.save!
+      else
+        return
+      end
     end
   end
   
