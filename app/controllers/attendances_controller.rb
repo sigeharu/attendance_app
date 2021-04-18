@@ -149,7 +149,7 @@ class AttendancesController < ApplicationController
   end
   
   def edit_superior_overtime_application
-    @attendances = Attendance.user_overtime_application(@user)
+    @attendances = Attendance.where(instructor_confirmation: "申請中", instructor: current_user.name).order(:worked_on).group_by(&:user_id)
   end
   
   def update_superior_overtime_application
