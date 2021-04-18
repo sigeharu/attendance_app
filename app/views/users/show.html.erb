@@ -246,7 +246,7 @@
           <% if current_user?(@user) %>
             <%= form_with(model: @attendance, url: update_month_superior_user_attendance_path(@user, date: @first_day),
                           local: true, method: :patch) do |month_superior| %>
-              <%= month_superior.collection_select :month_superior, @superior, :name, :name,
+              <%= month_superior.collection_select :month_superior, @superior.order(:id), :name, :name,
                                                    {prompt: "所属長を選択してください"}, {class: "form-control"} %>
               <%= month_superior.submit "申請する", class: "btn btn-primary btn-lg" %>
             <% end %>

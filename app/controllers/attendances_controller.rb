@@ -34,7 +34,7 @@ class AttendancesController < ApplicationController
   end
   
   def edit_one_month
-    @superior = User.find_superior(@user)
+    @superior = User.find_superior(@user).order(:id)
   end
   
   def update_one_month
@@ -81,6 +81,9 @@ class AttendancesController < ApplicationController
           flash[:danger] = "内容に不備があったため申請できませんでした｡"
           redirect_to user_url(@user) and return
         end
+      elsif (item["change_started_at(4i)"].present? && item["change_started_at(5i)"]) || (item["change_finished_at(4i)"].present? && item["change_finished_at(5i)"].present?)
+        flash[:danger] = "備考､指示者が未入力のため申請できませんでした｡"
+        redirect_to user_url(@user) and return
       end
     end
     Attendance.import attendances, on_duplicate_key_update: [:change_started_at, :change_finished_at,
@@ -248,7 +251,7 @@ class AttendancesController < ApplicationController
     # 勤怠情報変更申請を扱う
     def change_confirmation_params
       params.require(:user).permit(attendances: [:change_started_at, :change_finished_at, :note, :confirmation_next_day,
-                                                 :confirmation_superior, :confirmation_status, :worked_request_sign])
+                                                 :confirmation_superior, :confirmation_status, :worked_request_sign])[:attendances]
     end
 
     # 勤怠変更申請を承認する
