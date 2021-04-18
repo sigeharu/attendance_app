@@ -23,13 +23,13 @@
   <%= f.password_field :password_confirmation, class: "form-control" %>
   
   <%= f.label :basic_time, class: "label-#{yield}" %>
-  <%= f.time_field :basic_time, class: "form-control" %>
+  <%= f.time_field :basic_time, value: user.basic_time.strftime("%H:%M"), class: "form-control" %>
   
   <%= f.label :work_start_time, class: "label-#{yield}" %>
-  <%= f.time_field :work_start_time, class: "form-control" %>
+  <%= f.time_field :work_start_time, value: user.work_start_time.strftime("%H:%M"), class: "form-control" %>
   
   <%= f.label :work_end_time, class: "label-#{yield}" %>
-  <%= f.time_field :work_end_time, class: "form-control" %>
+  <%= f.time_field :work_end_time, value: user.work_end_time.strftime("%H:%M"), class: "form-control" %>
   
   <%= f.submit "編集する", class: "btn btn-primary btn-block btn-#{yield(:class_text)}" %>
 <% end %>
