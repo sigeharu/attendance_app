@@ -24,10 +24,10 @@
             <%= f.label "拠点種類", class: "label-#{yield(:class_text)}" %>
             <%= f.text_field :office_category, class: "form-control" %>
           
-            <div id="add=info">
+            <div>
               <div class="center">
                 <%= f.submit yield(:button_text), class: "btn btn-primary btn-#{yield(:class_text)}" %>
-                <button type="button" class="btn btn-default btn-<%= yield(:class_text) %>" data-dismiss="modal">
+                <button type="button" class="btn btn-default btn-base-new btn-<%= yield(:class_text) %>" data-dismiss="modal">
                   キャンセル
                 </button>
               </div>
