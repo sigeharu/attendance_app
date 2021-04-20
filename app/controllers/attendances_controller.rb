@@ -82,7 +82,21 @@ class AttendancesController < ApplicationController
           redirect_to user_url(@user) and return
         end
       elsif (item["change_started_at(4i)"].present? && item["change_started_at(5i)"]) || (item["change_finished_at(4i)"].present? && item["change_finished_at(5i)"].present?)
-        flash[:danger] = "備考､指示者が未入力のため申請できませんでした｡"
+        if item[:confirmation_superior].blank? && item[:note].blank?
+          flash[:danger] = "備考､指示者が未入力のため申請できませんでした｡"
+          redirect_to user_url(@user) and return
+        elsif item[:confirmation_superior].blank? && item[:note].present?
+          flash[:danger] = "指示者が未入力のため申請できませんでした｡"
+          redirect_to user_url(@user) and return
+        elsif item[:confirmation_superior].present? && item[:note].blank?
+          flash[:danger] = "備考が未入力のため申請できませんでした｡"
+          redirect_to user_url(@user) and return
+        end
+      elsif item[:confirmation_superior].present? && item[:note].blank?
+        flash[:danger] = "備考が未入力のため申請できませんでした｡"
+        redirect_to user_url(@user) and return
+      elsif item[:confirmation_superior].blank? && item[:note].present?
+        flash[:danger] = "指示者が未入力のため申請できませんでした｡"
         redirect_to user_url(@user) and return
       end
     end
