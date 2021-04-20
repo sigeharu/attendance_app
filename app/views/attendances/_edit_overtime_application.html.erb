@@ -4,15 +4,15 @@
 <%= form_with(model: @attendance, url: update_overtime_application_user_attendance_path(current_user, date: @attendance.worked_on), local: true, method: :patch) do |f| %>
   <div class="modal-dialog modal-lg modal-dialog-center">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header-approval">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         <h1 class="modal-title">【残業申請】</h1>
       </div>
-      <div class="modal-body">
+      <div class="modal-body-approval">
         <div class="row">
-          <table class="table table-bordered table-condensed table-hover tbody-light" id="table-attendances">
+          <table class="modal-table table-bordered table-condensed table-hover tbody-light" id="table-attendances">
             <thead>
               <tr>
                 <td>日付</td>
@@ -41,7 +41,7 @@
         </div>
       </div>
       
-      <div class="modal-footer">
+      <div class="modal-footer-approval">
         <%= f.submit yield(:button_text), class: "btn btn-primary btn-#{yield(:class_text)} form-control" %>
       </div>
     </div>

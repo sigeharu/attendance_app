@@ -2,19 +2,19 @@
 <% provide(:button_text, '変更を送信する') %>
 
 <%= form_with(model: @user, url: update_attendance_change_confirmation_user_attendance_path, local: true, method: :patch) do |f| %>
-  <div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <% @attendances.each do |user_id, attendances| %>
-        <div class="modal-header">
+        <div class="modal-header-approval">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
           <% user = User.find(user_id) %>
           <h1 class="modal-title">【<%= user.name %>からの勤怠申請変更】</h1>
         </div>
-        <div class="modal-body">
+        <div class="modal-body-approval">
           <div class="row">
-            <table class="table table-bordered table-condensed table-hover tbody-light" id="table-attendances">
+            <table class="modal-table table-bordered table-condensed table-hover tbody-light" id="table-attendances">
               <thead>
                 <tr>
                   <td rowspan="3">日付</td>
@@ -80,7 +80,7 @@
         </div>
       <% end %>
 
-      <div class="modal-footer">
+      <div class="modal-footer-approval">
         <%= f.submit yield(:button_text), class: "btn btn-primary btn-block form-control" %>
       </div>
     </div>
