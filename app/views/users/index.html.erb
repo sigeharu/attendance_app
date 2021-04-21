@@ -5,7 +5,7 @@
   <div class="col-md-4 col-md-offset-1">
     <%= form_tag import_users_path, multipart: true do %>
       <%= file_field_tag :file %>
-      <%= submit_tag "CSVインポート", class: 'btn btn-primary' %>
+      <%= submit_tag "CSVインポート", class: 'btn btn-primary btn-csv-inport' %>
     <% end %>
   </div>
 </div>
@@ -18,7 +18,7 @@
         <td><%= user.name %><br>
           <% if current_user.admin? && !current_user?(user) %>
             <%= link_to "削除", user, method: :delete, data: { confirm: "削除してもよろしいですか？" }, class: "btn btn-primary" %><br>
-            <div class="panel-group">
+            <div class="panel-group" style="margin-top: 10px;">
               <div class="panel panel-default">
                 <div class="panel-heading">
                   <h4 class="panel-title">

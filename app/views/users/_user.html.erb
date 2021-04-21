@@ -31,5 +31,5 @@
   <%= f.label :work_end_time, class: "label-#{yield}" %>
   <%= f.time_field :work_end_time, value: user.work_end_time.strftime("%H:%M"), class: "form-control" %>
   
-  <%= f.submit "編集する", class: "btn btn-primary btn-block btn-#{yield(:class_text)}" %>
+  <%= f.submit "編集する", class: "btn btn-primary btn-block btn-user-form btn-#{yield(:class_text)}" %>
 <% end %>
